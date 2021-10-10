@@ -24,11 +24,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '
-                | Name | Value |
-                | --- | --- |
-                | Build Logs | https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-              ',
+              body: '| Name | Value |\n| --- | --- |\n| Build Logs | https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} |',
             })
 
       # - name: PR Comment
