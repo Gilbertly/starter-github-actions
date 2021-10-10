@@ -1,0 +1,21 @@
+name: prBuild
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Echo message
+        run: echo "Deploy pr resources to staging"
+
+# install deps
+
+# build pr resources
+
+# deploy pr resources

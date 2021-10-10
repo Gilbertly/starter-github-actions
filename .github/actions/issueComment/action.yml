@@ -1,0 +1,13 @@
+name: issueComment
+description: Action to comment on an Issue.
+inputs:
+  token:
+    description: Github action permissions' token.
+    required: true
+  message:
+    description: The issue comment to be posted.
+    required: true
+    default: Hello there!
+runs:
+  using: docker
+  image: Dockerfile

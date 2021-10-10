@@ -1,0 +1,34 @@
+const core = require('@actions/core');
+const github = require('@actions/github');
+
+const run = async () => {
+  try {
+    const token = core.getInput('token');
+    const message = core.getInput('message');
+    const context = github.context;
+
+    if (!message) {
+      core.setFailed('"message" input not found.');
+      return;
+    }
+
+    if (context.payload.issue == null) {
+      core.setFailed('No issue found.');
+      return;
+    }
+
+    const issueNumber = context.payload.issue.number;
+    // eslint-disable-next-line new-cap
+    const octokit = new github.getOctokit(token);
+
+    octokit.issues.createComment({
+      ...context.repo,
+      issue_number: issueNumber,
+      body: message,
+    });
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+};
+
+run();

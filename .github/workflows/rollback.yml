@@ -1,0 +1,27 @@
+name: rollbackDeployment
+
+on:
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  Rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Echo message
+        run: echo "Comment on next available actions from user."
+
+      # - name: Test issueComment action
+      #   uses: ./.github/actions/issueComment
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     message: Hello comments.
+
+# comment deployment lists available
+
+# get user input
+
+# if prod, wait approval

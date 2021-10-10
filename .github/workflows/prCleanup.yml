@@ -1,0 +1,19 @@
+name: prCleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  Cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Echo message
+        run: echo "Remove created aws resources for the pr"
+
+# install deps
+
+# remove resources with pr number
