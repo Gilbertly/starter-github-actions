@@ -18,7 +18,7 @@ jobs:
 
       - name: Comment on Issue - Created
         uses: actions/github-script@v3
-        if: github.event.issues.labeled != true
+        if: issues.types != 'labeled'
         with:
           script: |
             github.issues.createComment({
@@ -30,7 +30,7 @@ jobs:
 
       - name: Comment on Issue - Labeled
         uses: actions/github-script@v3
-        if: github.event.issues.labeled == true
+        if: issues.types == 'labeled'
         with:
           script: |
             let rollbackStage = context.label.name;
