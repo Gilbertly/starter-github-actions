@@ -3,13 +3,22 @@ name: rollbackDeployment
 on:
   issues:
     types: [opened, labeled]
+  issue_comment:
+    types: [created]
 
 jobs:
   RollbackComment:
     runs-on: ubuntu-latest
+    if: ${{ !github.event.label }} && ${{ !github.event.issue.pull_request }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
+
+      - name: Fetch previous staging deployments
+        run: echo "Fetch previous staging deployments"
+
+      - name: Fetch previous prod deployments
+        run: echo "Fetch previous prod deployments"
 
       - name: Comment on Issue
         uses: actions/github-script@v3
@@ -42,7 +51,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Successfully rolled-back previous staging deployment!',
+              body: 'Successfully rolled-back previous `staging` deployment!',
             })
 
 # comment deployment lists available
