@@ -16,32 +16,23 @@ jobs:
         with:
           script: console.log(context)
 
-      - name: Comment on Issue - Created
+      - name: Comment on Issue
         uses: actions/github-script@v3
-        if: contains(github.event.label.name, 'rollback')
-        # if: ${{ github.event.label.name == 'bug' }}
         with:
           script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Please label the issue with an appropriate rollback tag. For example, the tags `RollbackStaging` or `RollbackProd`',
-            })
+            let commentBody = 'Please label the issue with an appropriate rollback tag. For example, the tags `RollbackStaging` or `RollbackProd`';;
 
-      - name: Comment on Issue - Labeled
-        uses: actions/github-script@v3
-        if: contains(github.event.label.name, 'rollback')
-        with:
-          script: |
-            let rollbackStage = context.label.name;
-            rollbackStage = rollbackStage.toLowerCase().split('rollback')[1];
+            if (context.label.name) {
+              let rollbackStage = context.label.name;
+              rollbackStage = rollbackStage.toLowerCase().split('rollback')[1];
+              commentBody = `Preparing to rollback previous deployment for STAGE='${rollbackStage}'`;
+            }
 
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Preparing to rollback previous deployment for STAGE='${rollbackStage}'`,
+              body: commentBody,
             })
 
 # comment deployment lists available
