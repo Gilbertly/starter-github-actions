@@ -2,7 +2,7 @@ name: rollbackDeployment
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [opened]
 
 jobs:
   Rollback:
@@ -10,6 +10,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
+
+      - name: View context attributes
+        uses: actions/github-script@v5
+        with:
+          script: console.log(context)
 
       - name: Comment on Issue
         uses: actions/github-script@v3
@@ -24,12 +29,6 @@ jobs:
 
       - name: Echo message
         run: echo "Comment on next available actions from user."
-
-      # - name: Test issueComment action
-      #   uses: ./.github/actions/issueComment
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     message: Hello comments.
 
 # comment deployment lists available
 
