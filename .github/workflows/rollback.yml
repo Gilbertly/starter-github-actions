@@ -18,7 +18,8 @@ jobs:
 
       - name: Comment on Issue - Created
         uses: actions/github-script@v3
-        if: issues.types != 'labeled'
+        if: contains(github.event.label.name, 'rollback')
+        # if: ${{ github.event.label.name == 'bug' }}
         with:
           script: |
             github.issues.createComment({
@@ -30,7 +31,7 @@ jobs:
 
       - name: Comment on Issue - Labeled
         uses: actions/github-script@v3
-        if: issues.types == 'labeled'
+        if: contains(github.event.label.name, 'rollback')
         with:
           script: |
             let rollbackStage = context.label.name;
