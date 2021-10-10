@@ -11,6 +11,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v1
 
+      - name: Comment on Issue
+        uses: actions/github-script@v3
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Please label the issue with an appropriate rollback tag. For example, the tags 'RollbackStaging' or 'RollbackProd',
+            })
+
       - name: Echo message
         run: echo "Comment on next available actions from user."
 
