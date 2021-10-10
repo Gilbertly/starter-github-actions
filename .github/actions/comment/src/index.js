@@ -17,21 +17,21 @@ const commentIssue = (context, token, message) => {
   });
 };
 
-const commentPullRequest = (context, token, message) => {
-  if (context.payload.pull_request == null) {
-    core.setFailed('No pull_request found.');
-    return;
-  }
+// const commentPullRequest = (context, token, message) => {
+//   if (context.payload.pull_request == null) {
+//     core.setFailed('No pull_request found.');
+//     return;
+//   }
 
-  const octokit = new github.getOctokit(token);
-  const prNumber = context.payload.pull_request.number;
+//   const octokit = new github.getOctokit(token);
+//   const prNumber = context.payload.pull_request.number;
 
-  octokit.issues.createComment({
-    ...context.repo,
-    issue_number: prNumber,
-    body: message
-  });
-};
+//   octokit.issues.createComment({
+//     ...context.repo,
+//     issue_number: prNumber,
+//     body: message
+//   });
+// };
 
 const run = async () => {
   try {
@@ -39,14 +39,29 @@ const run = async () => {
     const token = core.getInput('token');
     const type = core.getInput('type');
     const message = core.getInput('message');
+    const octokit = new github.getOctokit(token);
 
     if (!message) {
       core.setFailed('"message" input not found.');
       return;
     }
 
-    if (type === 'issue') commentIssue(context, token, message);
-    if (type === 'pr') commentPullRequest(context, token, message);
+    // if (type === 'issue') commentIssue(context, token, message);
+    // if (type === 'pr') commentPullRequest(context, token, message);
+
+    if (type === 'pr') {
+      if (context.payload.pull_request == null) {
+        core.setFailed('No pull_request found.');
+        return;
+      }
+
+      const prNumber = context.payload.pull_request.number;
+      octokit.issues.createComment({
+        ...context.repo,
+        issue_number: prNumber,
+        body: message
+      });
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
