@@ -5,34 +5,44 @@ on:
     types: [opened, labeled]
 
 jobs:
-  Rollback:
+  RollbackComment:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: View context attributes
-        uses: actions/github-script@v5
-        with:
-          script: console.log(context)
-
       - name: Comment on Issue
         uses: actions/github-script@v3
         with:
           script: |
-            let commentBody = 'Please label the issue with an appropriate rollback tag. For example, the tags `RollbackStaging` or `RollbackProd`';;
-
-            if (context.label && context.label.name) {
-              let rollbackStage = context.label.name;
-              rollbackStage = rollbackStage.toLowerCase().split('rollback')[1];
-              commentBody = `Preparing to rollback previous deployment for STAGE='${rollbackStage}'`;
-            }
+            let commentBody = 'Please label the issue with an appropriate rollback tag. For example, the tags `RollbackStaging` or `RollbackProd`';
 
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: commentBody,
+            })
+
+  RollbackStaging:
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'RollbackStaging'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Echo message
+        run: echo "Build and deploy to prod after approval"
+
+      - name: Comment on Issue
+        uses: actions/github-script@v3
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Successfully rolled-back previous staging deployment!',
             })
 
 # comment deployment lists available
