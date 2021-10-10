@@ -29,18 +29,6 @@ jobs:
               body: '| Name | Value |\n| --- | --- |\n| Build Logs | ${{ env.BUILD_LOGS_URL }} |',
             })
 
-      # - name: PR Comment
-      #   uses: ./.github/actions/comment
-      #   env:
-      #     BUILD_LOGS_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      #   with:
-      #     type: pr
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     message: |
-            # | Name | Value |
-            # | --- | --- |
-            # | Build Logs | ${{ env.BUILD_LOGS_URL }} |
-
 # install deps
 
 # build pr resources
