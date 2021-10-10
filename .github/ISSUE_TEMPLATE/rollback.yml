@@ -1,7 +1,7 @@
 name: Rollback Deployment
 description: Form to specify rollback-deployment details.
 title: "[Rollback]: "
-labels: ["rollback"]
+labels: [rollback]
 assignees:
   - gilbertly
 body:
