@@ -1,0 +1,37 @@
+name: Rollback Deployment
+description: Form to specify rollback-deployment details.
+title: "[Rollback]: "
+labels: ["rollback"]
+assignees:
+  - gilbertly
+body:
+  - type: markdown
+    attributes:
+      value: 'Kindly fill-out and specify the deployment rollback details:'
+  # - type: input
+  #   id: deployment
+  #   attributes:
+  #     label: Deployment Env. Details
+  #     description: Which deployment do you want to rollback?
+  #     placeholder: ex. staging, production, prNNN
+  #   validations:
+  #     required: false
+  - type: dropdown
+    id: rollbackEnvironment
+    attributes:
+      label: Version
+      description: Which environment do you wish to rollback?
+      options:
+        - staging
+        - production
+    validations:
+      required: true
+  - type: textarea
+    id: moreContext
+    attributes:
+      label: What happened (additional context)?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you saw!
+      value: "A bug happened, and I need to rollback to previous state!"
+    validations:
+      required: true
