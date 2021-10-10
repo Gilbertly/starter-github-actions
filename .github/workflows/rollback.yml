@@ -22,7 +22,7 @@ jobs:
           script: |
             let commentBody = 'Please label the issue with an appropriate rollback tag. For example, the tags `RollbackStaging` or `RollbackProd`';;
 
-            if (context.label.name) {
+            if (context.label && context.label.name) {
               let rollbackStage = context.label.name;
               rollbackStage = rollbackStage.toLowerCase().split('rollback')[1];
               commentBody = `Preparing to rollback previous deployment for STAGE='${rollbackStage}'`;
