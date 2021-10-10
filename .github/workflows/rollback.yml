@@ -24,7 +24,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Please label the issue with an appropriate rollback tag. For example, the tags 'RollbackStaging' or 'RollbackProd',
+              body: 'Please label the issue with an appropriate rollback tag. For example, the tags _RollbackStaging_ or _RollbackProd_',
             })
 
       - name: Echo message
