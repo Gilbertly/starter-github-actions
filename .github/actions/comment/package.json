@@ -1,7 +1,7 @@
 {
-  "name": "issuecomment",
+  "name": "comment",
   "version": "1.0.0",
-  "description": "Action to comment on an Issue.",
+  "description": "Action to comment on an Issue or Pull Request.",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
