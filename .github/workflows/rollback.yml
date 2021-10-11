@@ -44,7 +44,7 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            const commentBody = context.comment.body;
+            const commentBody = context.payload.comment.body;
             const rollbackTimestamp = commentBody.split('/rollback ')[1];
 
             if (rollbackTimestamp.indexOf(' ') >= 0) {
