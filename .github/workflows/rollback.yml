@@ -38,6 +38,7 @@ jobs:
       - name: Get rollback timestamp
         uses: actions/github-script@v5
         id: rollback-timestamp
+        result-encoding: string
         with:
           script: |
             const commentBody = context.payload.comment.body;
