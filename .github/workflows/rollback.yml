@@ -57,13 +57,14 @@ jobs:
 
       - name: Comment on Issue
         uses: actions/github-script@v5
+        # `${{steps.rollback-timestamp.outputs.result}}`
         with:
           script: |
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Successfully rolled-back previous `staging` deployment with timestamp `${{steps.rollback-timestamp.outputs.result}}`',
+              body: 'Successfully rolled-back previous `staging` deployment with timestamp ',
             })
 
 # comment deployment lists available
