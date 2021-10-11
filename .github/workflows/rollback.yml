@@ -2,46 +2,65 @@ name: rollbackDeployment
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [labeled]
   issue_comment:
     types: [created]
 
 jobs:
-  RollbackComment:
-    runs-on: ubuntu-latest
-    if: ${{ !github.event.label }} && ${{ !github.event.issue.pull_request }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v1
+  # RollbackStaging:
+  #   runs-on: ubuntu-latest
+  #   # if: ${{ !github.event.label }} && ${{ !github.event.issue.pull_request }}
+  #   # if: ${{ github.event_name == }}
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v1
 
-      - name: Fetch previous staging deployments
-        run: echo "Fetch previous staging deployments"
+  #     - name: Fetch previous staging deployments
+  #       run: echo "Fetch previous staging deployments"
 
-      - name: Fetch previous prod deployments
-        run: echo "Fetch previous prod deployments"
+  #     - name: Fetch previous prod deployments
+  #       run: echo "Fetch previous prod deployments"
 
-      - name: Comment on Issue
-        uses: actions/github-script@v3
-        with:
-          script: |
-            let commentBody = 'Please label the issue with an appropriate rollback tag. For example, the tags `RollbackStaging` or `RollbackProd`';
+  #     # - name: Comment on Issue
+  #     #   uses: actions/github-script@v3
+  #     #   with:
+  #     #     script: |
+  #     #       let commentBody = 'Please label the issue with an appropriate rollback tag. For example, the tags `RollbackStaging` or `RollbackProd`';
 
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: commentBody,
-            })
+  #     #       github.issues.createComment({
+  #     #         issue_number: context.issue.number,
+  #     #         owner: context.repo.owner,
+  #     #         repo: context.repo.repo,
+  #     #         body: commentBody,
+  #     #       })
 
-  RollbackStaging:
+  StagingPreviousDeployments:
     runs-on: ubuntu-latest
     if: github.event.label.name == 'RollbackStaging'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: Echo message
+      - name: Echo message - Fetch previous staging deployments
         run: echo "Build and deploy to prod after approval"
+
+      - name: Comment on Issue
+        uses: actions/github-script@v3
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Successfully rolled-back previous `staging` deployment!',
+            })
+
+  RollbackStaging:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.issue.pull_request && github.event.comment.body == '/rollback'}}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
 
       - name: Comment on Issue
         uses: actions/github-script@v3
