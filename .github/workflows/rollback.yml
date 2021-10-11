@@ -58,6 +58,7 @@ jobs:
                 comment_id: context.payload.comment.id,
                 content: "eyes",
               });
+              return '';
             } else {
               github.rest.reactions.createForIssueComment({
                 owner: context.repo.owner,
@@ -71,6 +72,7 @@ jobs:
 
       - name: Comment on Issue
         uses: actions/github-script@v5
+        if: ${{steps.rollback-timestamp.outputs.result != ''}}
         with:
           script: |
             github.rest.issues.createComment({
