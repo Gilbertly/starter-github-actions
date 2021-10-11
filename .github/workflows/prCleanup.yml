@@ -15,7 +15,7 @@ jobs:
         run: echo "Remove created aws resources for the pr"
 
       - name: Comment on PR
-        uses: actions/github-script@v3
+        uses: actions/github-script@v5
         with:
           script: |
             github.issues.createComment({

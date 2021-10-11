@@ -22,7 +22,7 @@ jobs:
   #       run: echo "Fetch previous prod deployments"
 
   #     # - name: Comment on Issue
-  #     #   uses: actions/github-script@v3
+  #     #   uses: actions/github-script@v5
   #     #   with:
   #     #     script: |
   #     #       let commentBody = 'Please label the issue with an appropriate rollback tag. For example, the tags `RollbackStaging` or `RollbackProd`';
@@ -45,7 +45,7 @@ jobs:
         run: echo "Build and deploy to prod after approval"
 
       - name: Comment on Issue
-        uses: actions/github-script@v3
+        uses: actions/github-script@v5
         with:
           script: |
             github.issues.createComment({
@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Comment on Issue
-        uses: actions/github-script@v3
+        uses: actions/github-script@v5
         with:
           script: |
             github.issues.createComment({
