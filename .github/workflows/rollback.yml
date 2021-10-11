@@ -44,7 +44,7 @@ jobs:
             const commentBody = context.payload.comment.body;
             const rollbackTimestamp = commentBody.split('/rollback ')[1];
 
-            if (rollbackTimestamp.indexOf(' ') >= 0) { # whitespaces available
+            if (rollbackTimestamp.indexOf(' ') >= 0) {
               github.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
