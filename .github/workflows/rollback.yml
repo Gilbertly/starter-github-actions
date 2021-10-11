@@ -40,16 +40,29 @@ jobs:
         with:
           script: console.log(context)
 
-      # - name: Get comment body payload
-      #   uses: actions/github-script@v3
-      #   with:
-      #     script: |
-      #       github.issues.createComment({
-      #         issue_number: context.issue.number,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: 'Successfully rolled-back previous `staging` deployment!',
-      #       })
+      - name: Get comment body payload
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const commentBody = context.comment.body;
+            const rollbackTimestamp = commentBody.split('/rollback ')[1];
+
+            if (rollbackTimestamp.indexOf(' ') >= 0) {
+              github.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `Invalid rollback parameter input: ${commentBody}`,
+              })
+            }
+
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Rolling-back staging deployment to: ${rollbackTimestamp}`,
+            })
+
 
       - name: Comment on Issue
         uses: actions/github-script@v3
