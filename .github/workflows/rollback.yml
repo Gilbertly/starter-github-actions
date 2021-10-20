@@ -45,7 +45,9 @@ jobs:
 
       - name: Fetch previous staging deployments
         id: fetchPreviousDeployments
-        run: echo "::set-output name=previousDeployments::$(SLS_DEBUG=* && $(npm bin)/sls deploy -s staging list)\n"
+        run: |
+          SLS_DEBUG=* && $(npm bin)/sls deploy -s staging list 2>&1 | tee deployments.log
+          echo "::set-output name=previousDeployments::$(cat deployments.log)\n"
 
       - name: Comment on Issue
         uses: actions/github-script@v5
