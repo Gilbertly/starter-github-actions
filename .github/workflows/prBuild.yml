@@ -4,6 +4,11 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+env:
+  AWS_REGION: us-east-1
+  NODE_VERSION: '14'
+  PR_NUMBER: pr${{ github.event.pull_request.number }}
+
 concurrency:
   group: ${{ github.head_ref }}
   cancel-in-progress: true
@@ -15,24 +20,52 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Echo message
-        run: |
-          echo "Deploy pr resources to staging"
-          # echo ::set-output name=buildOutput::""
-
-      - name: Comment on PR
-        uses: actions/github-script@v3
-        if: github.event.pull_request.synchronize != true
-        env:
-          BUILD_LOGS_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - name: Set up node
+        uses: actions/setup-node@v2
         with:
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '| Name | Value |\n| --- | --- |\n| Build Logs | ${{ env.BUILD_LOGS_URL }} |',
-            })
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org
+
+      - name: Restore & cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm i --no-package-lock
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to PR env
+        run: SLS_DEBUG=* && $(npm bin)/sls deploy -s ${{ env.PR_NUMBER }}
+
+      # - name: Echo message
+      #   run: |
+      #     echo "Deploy pr resources to staging"
+      #     # echo ::set-output name=buildOutput::""
+
+      # - name: Comment on PR
+      #   uses: actions/github-script@v3
+      #   if: github.event.pull_request.synchronize != true
+      #   env:
+      #     BUILD_LOGS_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      #   with:
+      #     script: |
+      #       github.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: '| Name | Value |\n| --- | --- |\n| Build Logs | ${{ env.BUILD_LOGS_URL }} |',
+      #       })
 
 # install deps
 
