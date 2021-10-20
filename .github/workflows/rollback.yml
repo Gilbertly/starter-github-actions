@@ -45,7 +45,7 @@ jobs:
 
       - name: Fetch previous staging deployments
         id: fetchPreviousDeployments
-        run: echo "::set-output name=previousDeployments::$(serverless deploy -s staging list)\n"
+        run: echo "::set-output name=previousDeployments::$(SLS_DEBUG=* && $(npm bin)/sls deploy -s staging list)\n"
 
       - name: Comment on Issue
         uses: actions/github-script@v5
@@ -55,7 +55,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '${{ steps.fetchPreviousDeployments.outputs.previousDeployments }}',
+              body: 'Previous `staging` deployments:\n${{ steps.fetchPreviousDeployments.outputs.previousDeployments }}',
             })
 
   RollbackStaging:
