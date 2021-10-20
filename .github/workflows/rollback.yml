@@ -14,8 +14,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: Echo message - Fetch previous staging deployments
-        run: echo "Build and deploy to prod after approval"
+      - name: Fetch previous staging deployments
+        id: fetchPreviousDeployments
+        run: echo "::set-output name=previousDeployments::$(serverless deploy -s staging list)\n"
 
       - name: Comment on Issue
         uses: actions/github-script@v5
@@ -25,7 +26,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Previous `staging` deployments:',
+              body: '${{ steps.fetchPreviousDeployments.outputs.previousDeployments }}',
             })
 
   RollbackStaging:
@@ -85,84 +86,84 @@ jobs:
               body: 'Successfully rolled-back previous `staging` deployment with timestamp `${{steps.rollback-timestamp.outputs.result}}`',
             })
 
-  ProdPreviousDeployments:
-    runs-on: ubuntu-latest
-    if: github.event.label.name == 'RollbackProd'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v1
+  # ProdPreviousDeployments:
+  #   runs-on: ubuntu-latest
+  #   if: github.event.label.name == 'RollbackProd'
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v1
 
-      - name: Echo message - Fetch previous prod deployments
-        run: echo "Fetch previous prod deployments ..."
+  #     - name: Echo message - Fetch previous prod deployments
+  #       run: echo "Fetch previous prod deployments ..."
 
-      - name: Comment on Issue
-        uses: actions/github-script@v5
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Previous `prod` deployments:',
-            })
+  #     - name: Comment on Issue
+  #       uses: actions/github-script@v5
+  #       with:
+  #         script: |
+  #           github.rest.issues.createComment({
+  #             issue_number: context.issue.number,
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             body: 'Previous `prod` deployments:',
+  #           })
 
-  RollbackDeployment:
-    runs-on: ubuntu-latest
-    if: ${{ !github.event.issue.pull_request && contains(github.event.comment.body, '/rollback')}}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v1
+  # RollbackDeployment:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ !github.event.issue.pull_request && contains(github.event.comment.body, '/rollback')}}
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v1
 
-      - name: Get rollback timestamp
-        uses: actions/github-script@v5
-        id: rollback
-        with:
-          script: |
-            const commentBody = context.payload.comment.body;
-            const rollbackInput = commentBody.split('/rollback ')[1];
-            const rollbackStage = rollbackInput.split(' ')[0].toLowerCase();
-            const rollbackTimestamp = rollbackInput.split(' ')[1];
+  #     - name: Get rollback timestamp
+  #       uses: actions/github-script@v5
+  #       id: rollback
+  #       with:
+  #         script: |
+  #           const commentBody = context.payload.comment.body;
+  #           const rollbackInput = commentBody.split('/rollback ')[1];
+  #           const rollbackStage = rollbackInput.split(' ')[0].toLowerCase();
+  #           const rollbackTimestamp = rollbackInput.split(' ')[1];
 
-            if (['prod', 'staging'].includes(rollbackStage)) {
-              github.rest.reactions.createForIssueComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: context.payload.comment.id,
-                content: '+1',
-              });
-              return { rollbackStage, rollbackTimestamp };
-            } else {
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `Invalid rollback parameter inputs: ${commentBody}`,
-              });
+  #           if (['prod', 'staging'].includes(rollbackStage)) {
+  #             github.rest.reactions.createForIssueComment({
+  #               owner: context.repo.owner,
+  #               repo: context.repo.repo,
+  #               comment_id: context.payload.comment.id,
+  #               content: '+1',
+  #             });
+  #             return { rollbackStage, rollbackTimestamp };
+  #           } else {
+  #             github.rest.issues.createComment({
+  #               issue_number: context.issue.number,
+  #               owner: context.repo.owner,
+  #               repo: context.repo.repo,
+  #               body: `Invalid rollback parameter inputs: ${commentBody}`,
+  #             });
 
-              github.rest.reactions.createForIssueComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: context.payload.comment.id,
-                content: 'eyes',
-              });
-              return;
-            }
+  #             github.rest.reactions.createForIssueComment({
+  #               owner: context.repo.owner,
+  #               repo: context.repo.repo,
+  #               comment_id: context.payload.comment.id,
+  #               content: 'eyes',
+  #             });
+  #             return;
+  #           }
 
-      - name: Echo message - Fetch previous staging deployments
-        if: ${{steps.rollback.outputs.result}}
-        run: echo "Rolling back to timestamp - ${{steps.rollback.outputs.result.rollbackTimestamp}}"
+  #     - name: Echo message - Fetch previous staging deployments
+  #       if: ${{steps.rollback.outputs.result}}
+  #       run: echo "Rolling back to timestamp - ${{steps.rollback.outputs.result.rollbackTimestamp}}"
 
-      - name: Comment on Issue
-        uses: actions/github-script@v5
-        if: ${{steps.rollback.outputs.result}}
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Successfully rolled-back previous `staging` deployment with timestamp `${{steps.rollback.outputs.result.rollbackTimestamp}}`',
-            })
+  #     - name: Comment on Issue
+  #       uses: actions/github-script@v5
+  #       if: ${{steps.rollback.outputs.result}}
+  #       with:
+  #         script: |
+  #           github.rest.issues.createComment({
+  #             issue_number: context.issue.number,
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             body: 'Successfully rolled-back previous `staging` deployment with timestamp `${{steps.rollback.outputs.result.rollbackTimestamp}}`',
+  #           })
 
 # comment deployment lists available
 
