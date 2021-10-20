@@ -66,9 +66,3 @@ jobs:
       #         repo: context.repo.repo,
       #         body: '| Name | Value |\n| --- | --- |\n| Build Logs | ${{ env.BUILD_LOGS_URL }} |',
       #       })
-
-# install deps
-
-# build pr resources
-
-# deploy pr resources
