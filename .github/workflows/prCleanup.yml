@@ -44,9 +44,6 @@ jobs:
       - name: Cleanup PR env resources
         run: SLS_DEBUG=* && $(npm bin)/sls remove -s ${{ env.PR_NUMBER }}
 
-      # - name: Echo message
-      #   run: echo "Remove created aws resources for the pr"
-
       - name: Comment on PR
         uses: actions/github-script@v5
         with:
@@ -55,5 +52,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🎉 Successfully cleaned-up '${{ env.PR_NUMBER }}' AWS resources!`,
+              body: '🎉  Successfully removed AWS `${{ env.PR_NUMBER }}` resources!',
             })
