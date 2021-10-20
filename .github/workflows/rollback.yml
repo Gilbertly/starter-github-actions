@@ -34,7 +34,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm i --no-package-lock
+        run: npm i --no-package-lock && npm i shelljs
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -43,18 +43,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # - name: Fetch previous staging deployments
-      #   id: fetchPreviousDeployments
-      #   run: |
-      #     SLS_DEBUG=* && $(npm bin)/sls deploy -s staging list 2>&1 | tee deployments.log
-      #     echo "::set-output name=previousDeployments::$(cat deployments.log)\n"
+      - name: Fetch previous staging deployments
+        id: fetchPreviousDeployments
+        run: |
+          SLS_DEBUG=* && $(npm bin)/sls deploy -s staging list 2>&1 | tee deployments.log
+          echo "::set-output name=previousDeployments::$(cat deployments.log)\n"
 
       - name: Comment on Issue
         uses: actions/github-script@v5
+        # const deployments = shell.exec('$(npm bin)/sls deploy -s staging list').stdout;
         with:
           script: |
             const shell = require('shelljs');
-            const deployments = shell.exec('$(npm bin)/sls deploy -s staging list').stdout;
+            const deployments = shell.exec('cat deployments.log').stdout;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
