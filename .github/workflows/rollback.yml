@@ -44,14 +44,10 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Fetch previous staging deployments
-        id: fetchPreviousDeployments
-        run: |
-          SLS_DEBUG=* && $(npm bin)/sls deploy -s staging list 2>&1 | tee deployments.log
-          echo "::set-output name=previousDeployments::$(cat deployments.log)\n"
+        run: SLS_DEBUG=* && $(npm bin)/sls deploy -s staging list 2>&1 | tee deployments.log
 
       - name: Comment on Issue
         uses: actions/github-script@v5
-        # const deployments = shell.exec('$(npm bin)/sls deploy -s staging list').stdout;
         with:
           script: |
             const shell = require('shelljs');
@@ -61,7 +57,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Previous deployments:\n${deployments}`,
+              body: 'Previous `staging` deployments:\n```sh' + deployments + '```',
             })
 
   RollbackStaging:
