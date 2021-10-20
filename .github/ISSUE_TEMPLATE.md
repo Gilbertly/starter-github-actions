@@ -36,3 +36,13 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+**How To: Rolling back**
+
+To rollback a deployment, comment on the issue with the following body:
+
+`/rollback <stage> <timestamp>`
+
+For example, to rollback a staging deployment, comment on the issue like:
+
+`/rollback staging 12345678`
