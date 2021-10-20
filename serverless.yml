@@ -1,0 +1,41 @@
+service: starter-github-actions
+frameworkVersion: '>2.4'
+configValidationMode: error
+useDotenv: true
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    packagePath: .package.json
+    includeModules: true
+    excludeFiles: src/__tests__
+    packager: npm
+    forceExclude: [aws-sdk]
+  param: ${file(./serverless.env.yml):${self:provider.stage, 'dev'}}
+
+provider:
+  name: aws
+  runtime: ${self:custom.param.NODE_VERSION}
+  timeout: 10 # seconds
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  lambdaHashingVersion: 20201221
+  stackName: ${self:provider.stage}-${self:service}
+  logRetentionInDays: ${self:custom.param.LOG_RETENTION}
+  tags:
+    project: ${self:provider.stage}-${self:service}
+  deploymentBucket:
+    blockPublicAccess: true
+    serverSideEncryption: AES256
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    NODE_TLS_REJECT_UNAUTHORIZED: 1
+
+functions:
+  helloFunction:
+    name: ${self:provider.stage}_hello_ga_ts
+    handler: handler.hello
+    description: Basic sample function.
