@@ -57,7 +57,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Previous `staging` deployments:\n${{ steps.fetchPreviousDeployments.outputs.previousDeployments }}',
+              body: 'Previous `staging` deployments:\n${{ join(steps.fetchPreviousDeployments.outputs.*, '\n') }}',
             })
 
   RollbackStaging:
@@ -101,7 +101,7 @@ jobs:
               return rollbackTimestamp;
             }
 
-      - name: Echo message - Fetch previous staging deployments
+      - name: Rollback staging deployment
         if: ${{steps.rollback-timestamp.outputs.result != ''}}
         run: echo "Rolling back to timestamp - ${{steps.rollback-timestamp.outputs.result != ''}}"
 
