@@ -53,16 +53,16 @@ jobs:
       #     echo "Deploy pr resources to staging"
       #     # echo ::set-output name=buildOutput::""
 
-      # - name: Comment on PR
-      #   uses: actions/github-script@v3
-      #   if: github.event.pull_request.synchronize != true
-      #   env:
-      #     BUILD_LOGS_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      #   with:
-      #     script: |
-      #       github.issues.createComment({
-      #         issue_number: context.issue.number,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: '| Name | Value |\n| --- | --- |\n| Build Logs | ${{ env.BUILD_LOGS_URL }} |',
-      #       })
+      - name: Comment on PR
+        uses: actions/github-script@v5
+        if: github.event.pull_request.synchronize != true
+        env:
+          BUILD_LOGS_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '| Name | Value |\n| --- | --- |\n| Build Logs | ${{ env.BUILD_LOGS_URL }} |',
+            })
