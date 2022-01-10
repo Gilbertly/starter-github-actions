@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/Gilbertly/starter-github-actions#readme",
   "devDependencies": {
-    "@commitlint/cli": "^13.2.0",
+    "@commitlint/cli": "^16.0.2",
     "@commitlint/config-conventional": "^13.2.0",
     "@semantic-release/changelog": "^6.0.0",
     "@semantic-release/git": "^10.0.0",
