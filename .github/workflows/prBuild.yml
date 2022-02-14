@@ -54,7 +54,7 @@ jobs:
       #     # echo ::set-output name=buildOutput::""
 
       - name: Comment on PR
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         if: github.event.pull_request.synchronize != true
         env:
           BUILD_LOGS_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
