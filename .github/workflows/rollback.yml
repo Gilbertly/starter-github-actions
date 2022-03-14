@@ -16,7 +16,7 @@ jobs:
     if: github.event.label.name == 'RollbackStaging'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
       - name: Set up node
         uses: actions/setup-node@v2
@@ -65,7 +65,7 @@ jobs:
     if: ${{ !github.event.issue.pull_request && contains(github.event.comment.body, '/rollback')}}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
       - name: Set up node
         uses: actions/setup-node@v2
@@ -147,7 +147,7 @@ jobs:
   #   if: github.event.label.name == 'RollbackProd'
   #   steps:
   #     - name: Checkout repository
-  #       uses: actions/checkout@v1
+  #       uses: actions/checkout@v3
 
   #     - name: Echo message - Fetch previous prod deployments
   #       run: echo "Fetch previous prod deployments ..."
@@ -168,7 +168,7 @@ jobs:
   #   if: ${{ !github.event.issue.pull_request && contains(github.event.comment.body, '/rollback')}}
   #   steps:
   #     - name: Checkout repository
-  #       uses: actions/checkout@v1
+  #       uses: actions/checkout@v3
 
   #     - name: Get rollback timestamp
   #       uses: actions/github-script@v5
