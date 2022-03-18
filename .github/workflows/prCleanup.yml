@@ -45,7 +45,7 @@ jobs:
         run: SLS_DEBUG=* && $(npm bin)/sls remove -s ${{ env.PR_NUMBER }}
 
       - name: Comment on PR
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: |
             github.rest.issues.createComment({

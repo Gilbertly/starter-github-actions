@@ -47,7 +47,7 @@ jobs:
         run: SLS_DEBUG=* && $(npm bin)/sls deploy -s staging list 2>&1 | tee deployments.log
 
       - name: Comment on Issue
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           script: |
             const shell = require('shelljs');
@@ -93,7 +93,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Get rollback timestamp
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         id: rollback-timestamp
         with:
           result-encoding: string
@@ -131,7 +131,7 @@ jobs:
         run: SLS_DEBUG=* && $(npm bin)/sls rollback -s staging -t ${{steps.rollback-timestamp.outputs.result}}
 
       - name: Comment on Issue
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         if: ${{steps.rollback-timestamp.outputs.result != ''}}
         with:
           script: |
@@ -153,7 +153,7 @@ jobs:
   #       run: echo "Fetch previous prod deployments ..."
 
   #     - name: Comment on Issue
-  #       uses: actions/github-script@v5
+  #       uses: actions/github-script@v6
   #       with:
   #         script: |
   #           github.rest.issues.createComment({
@@ -171,7 +171,7 @@ jobs:
   #       uses: actions/checkout@v1
 
   #     - name: Get rollback timestamp
-  #       uses: actions/github-script@v5
+  #       uses: actions/github-script@v6
   #       id: rollback
   #       with:
   #         script: |
@@ -210,7 +210,7 @@ jobs:
   #       run: echo "Rolling back to timestamp - ${{steps.rollback.outputs.result.rollbackTimestamp}}"
 
   #     - name: Comment on Issue
-  #       uses: actions/github-script@v5
+  #       uses: actions/github-script@v6
   #       if: ${{steps.rollback.outputs.result}}
   #       with:
   #         script: |

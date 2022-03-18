@@ -1,6 +1,6 @@
 service: starter-github-actions
 frameworkVersion: '>2.4'
-configValidationMode: error
+# configValidationMode: error
 useDotenv: true
 
 plugins:
